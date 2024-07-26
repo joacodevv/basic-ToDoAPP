@@ -11,7 +11,8 @@ import com.example.todoapp.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class MainActivity : AppCompatActivity(), TaskAdapter.TaskListener, AddEditTaskFragment.AddEditTaskListener {
+class MainActivity : AppCompatActivity(), TaskAdapter.TaskListener,
+    AddEditTaskFragment.AddEditTaskListener {
 
     private lateinit var binding: ActivityMainBinding
     private var dao: TaskDao? = null
@@ -28,12 +29,15 @@ class MainActivity : AppCompatActivity(), TaskAdapter.TaskListener, AddEditTaskF
         initListeners()
         example()
 
+
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
     }
+
 
     private fun initListeners() {
         binding.fabbtn.setOnClickListener {
@@ -47,9 +51,9 @@ class MainActivity : AppCompatActivity(), TaskAdapter.TaskListener, AddEditTaskF
     }
 
     private fun example() {
-       lifecycleScope.launch(Dispatchers.IO) {
-           dao?.insertTask(TaskModel(1, "EXAMPLE", "EXAMPLE"))
-       }
+        lifecycleScope.launch(Dispatchers.IO) {
+            dao?.insertTask(TaskModel(1, "EXAMPLE","EASY","EXAMPLE"))
+        }
     }
 
     private fun showData() {
@@ -59,6 +63,7 @@ class MainActivity : AppCompatActivity(), TaskAdapter.TaskListener, AddEditTaskF
             }
         }
     }
+
 
     private fun initVars() {
         dao = AppDatabase.getDatabase(this).taskDao()
@@ -78,11 +83,17 @@ class MainActivity : AppCompatActivity(), TaskAdapter.TaskListener, AddEditTaskF
         }
     }
 
+    override fun onDoubleClicked(task: TaskModel) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            dao?.deleteTaskById(task.id)
+        }
+    }
+
     override fun onSaveBtnClicked(isUpdate: Boolean, task: TaskModel) {
         lifecycleScope.launch(Dispatchers.IO) {
-            if (isUpdate){
+            if (isUpdate) {
                 dao?.updateTask(task)
-            }else{
+            } else {
                 dao?.insertTask(task)
             }
             dao?.insertTask(task)

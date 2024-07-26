@@ -31,15 +31,17 @@ class AddEditTaskFragment(private val listener: AddEditTaskListener, private val
     private fun setExistingDataOnUi(task: TaskModel){
         binding.taskNameEt.setText(task.name)
         binding.taskDescriptionEt.setText(task.description)
+        binding.taskPriorityEt.setText(task.priority)
         binding.saveBtn.text = getString(R.string.update)
     }
 
     private fun attachUiListener() {
         binding.saveBtn.setOnClickListener {
             val name = binding.taskNameEt.text.toString()
+            val priority = binding.taskPriorityEt.text.toString()
             val description = binding.taskDescriptionEt.text.toString()
             if (name.isNotEmpty() && description.isNotEmpty()) {
-                val taskModel1 = TaskModel(task?.id ?: 0, name, description)
+                val taskModel1 = TaskModel(task?.id ?: 0, name, priority ,description)
                 listener.onSaveBtnClicked(true ,taskModel1)
             }
             dismiss()

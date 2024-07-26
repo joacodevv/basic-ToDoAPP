@@ -11,6 +11,7 @@ import com.google.gson.reflect.TypeToken
 data class TaskModel(
     @PrimaryKey(autoGenerate = true) val id: Int,
     @ColumnInfo(name = "task_name") val name: String,
+    @ColumnInfo(name = "task_priority") val priority: String,
     @ColumnInfo(name = "task_description") val description: String
 )
 

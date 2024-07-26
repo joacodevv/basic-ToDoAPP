@@ -1,6 +1,9 @@
 package com.example.todoapp
 
+import android.annotation.SuppressLint
+import android.graphics.Color
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -17,11 +20,32 @@ class TaskAdapter(private val listener: TaskListener) : ListAdapter<TaskModel, T
             binding.deleteBtn.setOnClickListener {
                 listener.onDeleteBtnClicked(getItem(adapterPosition))
             }
-
+            binding.itemContainer.setOnClickListener(object : DoubleCLickListener(){
+                override fun onDoubleClick(v: View?) {
+                    listener.onDeleteBtnClicked(getItem(adapterPosition))
+                }
+            })
         }
+        @SuppressLint("SetTextI18n")
         fun bind(task: TaskModel) {
             binding.taskNameTv.text = task.name
             binding.taskDescriptionTv.text = task.description
+            when(task.priority.isNotEmpty()){
+                (task.priority.lowercase() == "high") -> {
+                    binding.taskPriorityTv.text = "HIGH"
+                    binding.itemContainer.setCardBackgroundColor(Color.RED)
+                }
+                (task.priority.lowercase() == "medium") -> {
+                    binding.taskPriorityTv.text = "MEDIUM"
+                    binding.itemContainer.setCardBackgroundColor(Color.YELLOW)
+                }
+                (task.priority.lowercase() == "easy") -> {
+                    binding.taskPriorityTv.text = "EASY"
+                    binding.itemContainer.setCardBackgroundColor(Color.GREEN)
+                }
+
+                else -> {}
+            }
         }
     }
 
@@ -47,5 +71,28 @@ class TaskAdapter(private val listener: TaskListener) : ListAdapter<TaskModel, T
     interface TaskListener {
         fun onEditBtnClicked(task: TaskModel)
         fun onDeleteBtnClicked(task: TaskModel)
+        fun onDoubleClicked(task: TaskModel)
     }
+
+    abstract class DoubleCLickListener : View.OnClickListener {
+
+        private var lastClickTime: Long = 0
+
+        companion object{
+
+            private const val DOUBLE_CLICK_TIME_INTERVAL: Long = 3000
+
+        }
+
+        override fun onClick(v: View) {
+            val clickTime = System.currentTimeMillis()
+            if (clickTime - lastClickTime < DOUBLE_CLICK_TIME_INTERVAL) {
+                onDoubleClick(v)
+            }
+            lastClickTime = clickTime
+        }
+        abstract fun onDoubleClick(v: View?)
+    }
+
+
 }

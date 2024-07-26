@@ -7,4 +7,5 @@
     <string name="task_description">Task Description</string>
     <string name="save">Save</string>
     <string name="update">Update</string>
+    <string name="task_priority">Task Priority (EASY, MEDIUM, HIGH)</string>
 </resources>
