@@ -77,11 +77,6 @@ class MainActivity : AppCompatActivity(), TaskAdapter.TaskListener,
         showBottomSheet(task)
     }
 
-    override fun onDeleteBtnClicked(task: TaskModel) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            dao?.deleteTask(task)
-        }
-    }
 
     override fun onDoubleClicked(task: TaskModel) {
         lifecycleScope.launch(Dispatchers.IO) {

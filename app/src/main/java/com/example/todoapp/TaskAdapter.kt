@@ -13,16 +13,25 @@ import com.example.todoapp.databinding.ItemTaskBinding
 class TaskAdapter(private val listener: TaskListener) : ListAdapter<TaskModel, TaskAdapter.TaskViewHolder>(TaskDiffCallback()) {
 
     inner class TaskViewHolder(private val binding: ItemTaskBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        private var isActive = true
+
         init {
             binding.editBtn.setOnClickListener {
                 listener.onEditBtnClicked(getItem(adapterPosition))
             }
-            binding.deleteBtn.setOnClickListener {
-                listener.onDeleteBtnClicked(getItem(adapterPosition))
+            binding.deleteBtn.setOnClickListener() {
+                isActive = !isActive
+                if (isActive == false){
+                    binding.itemContainer.setCardBackgroundColor(Color.GRAY)
+                }else{
+                    bind(getItem(adapterPosition))
+                }
+
             }
             binding.itemContainer.setOnClickListener(object : DoubleCLickListener(){
                 override fun onDoubleClick(v: View?) {
-                    listener.onDeleteBtnClicked(getItem(adapterPosition))
+                    listener.onDoubleClicked(getItem(adapterPosition))
                 }
             })
         }
@@ -70,7 +79,7 @@ class TaskAdapter(private val listener: TaskListener) : ListAdapter<TaskModel, T
 
     interface TaskListener {
         fun onEditBtnClicked(task: TaskModel)
-        fun onDeleteBtnClicked(task: TaskModel)
+
         fun onDoubleClicked(task: TaskModel)
     }
 
